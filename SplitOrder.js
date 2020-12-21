@@ -37,12 +37,16 @@ function calcOrderValue(minValue, maxValue, investAmount, ISIN, orders) {
     if (investAmount != 0) {
       var i = 0;
       var interval = maxValue - minValue;
+      // for all orders
       while (i < orders.length) {
-        if (minRemainder > interval) {
+        // if minRemainder > interval this means that the amount to be invested is greater or equal to than the inteval so one order can be filled to the max
+        if (minRemainder >= interval) {
           orders[i].amount += interval;
           minRemainder -= interval;
           investAmount -= interval;
-        } else if (minRemainder < interval && minRemainder != 0) {
+        }
+           // if minRemainder < interval this means that the amount to be invested is smaller than the interval so it is completely added to the orderamount and then set to 0
+        else if (minRemainder < interval && minRemainder != 0) {
           orders[i].amount +=
             Math.round((minRemainder + Number.EPSILON) * 100) / 100;
           investAmount =
