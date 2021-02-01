@@ -1,17 +1,27 @@
-var orders = [];
-baseOrder = {
+interface Order {
+  amount: number;
+  ISIN: string;
+}
+let orders:Order[] = [];
+let baseOrder = {
   ISIN: "",
   amount: 0,
 };
-function calcOrderValue(minValue, maxValue, investAmount, ISIN, orders) {
+function calcOrderValue(
+  minValue: number,
+  maxValue: number,
+  investAmount: number,
+  ISIN: string,
+  orders:Order[]
+) {
   //Reset baseOrder
   baseOrder.ISIN = ISIN;
   baseOrder.amount = 0;
   orders = [];
   // maxRemainder for seeing is an easy calculation can be done.
-  var maxRemainder =
+  let maxRemainder =
     Math.round(((investAmount % maxValue) + Number.EPSILON) * 100) / 100;
-  var minRemainder =
+  let minRemainder =
     Math.round(((investAmount % minValue) + Number.EPSILON) * 100) / 100;
 
   // if maxRemainder is 0 then we just divide the to be invested amount by the max order value and fill that itno an array.
@@ -25,7 +35,7 @@ function calcOrderValue(minValue, maxValue, investAmount, ISIN, orders) {
   // if maxRemainder for max orders isn't  0 then we have to do some more complicated calculations
   else {
     //we first make an array with orders of minvalue, number of orders is cacluated by the taking the minimal amount of orders of min value to statisfy the investAmount minus the remainder
-    numberOfOrders = Math.trunc(investAmount / minValue);
+    const numberOfOrders = Math.trunc(investAmount / minValue);
 
     baseOrder.amount = minValue;
     while (orders.length < numberOfOrders) {
@@ -35,8 +45,8 @@ function calcOrderValue(minValue, maxValue, investAmount, ISIN, orders) {
 
     // if the above already makes an array which then this will not be executed
     if (investAmount != 0) {
-      var i = 0;
-      var interval = maxValue - minValue;
+      let i = 0;
+      let interval = maxValue - minValue;
       // for all orders
       while (i < orders.length) {
         // if minRemainder > interval this means that the amount to be invested is greater or equal to than the inteval so one order can be filled to the max
@@ -45,7 +55,7 @@ function calcOrderValue(minValue, maxValue, investAmount, ISIN, orders) {
           minRemainder -= interval;
           investAmount -= interval;
         }
-           // if minRemainder < interval this means that the amount to be invested is smaller than the interval so it is completely added to the orderamount and then set to 0
+        // if minRemainder < interval this means that the amount to be invested is smaller than the interval so it is completely added to the orderamount and then set to 0
         else if (minRemainder < interval && minRemainder != 0) {
           orders[i].amount +=
             Math.round((minRemainder + Number.EPSILON) * 100) / 100;
@@ -61,7 +71,8 @@ function calcOrderValue(minValue, maxValue, investAmount, ISIN, orders) {
   toLog(minValue, maxValue, maxRemainder, investAmount, orders);
 }
 
-function toLog(minValue, maxValue, maxRemainder, investAmount, orders) {
+  
+function toLog(minValue: number, maxValue: number, maxRemainder: number, investAmount: number, orders:Order[]) {
   let i = 0;
   let totalAmount = 0;
   while (i < orders.length) {
